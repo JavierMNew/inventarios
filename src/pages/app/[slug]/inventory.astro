@@ -1,0 +1,22 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import { supabase } from "../../../lib/supabase";
+export const prerender = false;
+
+const accessToken = Astro.cookies.get("sb-access-token");
+const refreshToken = Astro.cookies.get("sb-refresh-token");
+
+await supabase.auth.setSession({
+    refresh_token: refreshToken!.value,
+    access_token: accessToken!.value,
+});
+
+const { data: empresas, error } = await supabase
+    .from("empresas")
+    .select("nombre, slug")
+    .eq("slug", Astro.params.slug);
+---
+
+<Layout title={`Inventario - ${empresas?.[0].nombre}`}>
+    <h1>Inventario de {empresas?.[0].nombre}</h1>
+</Layout>

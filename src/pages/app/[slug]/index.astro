@@ -1,0 +1,27 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import { supabase } from "../../../lib/supabase";
+export const prerender = false;
+
+const accessToken = Astro.cookies.get("sb-access-token");
+const refreshToken = Astro.cookies.get("sb-refresh-token");
+
+await supabase.auth.setSession({
+    refresh_token: refreshToken!.value,
+    access_token: accessToken!.value,
+});
+
+const { data: empresas, error } = await supabase
+    .from("empresas")
+    .select("nombre, slug")
+    .eq("slug", Astro.params.slug);
+---
+
+<Layout title={`Inicio - ${empresas?.[0].nombre}`}>
+    <h1>Estas en {empresas?.[0].nombre}</h1>
+    <a href={`/app/${empresas?.[0].slug}/inventory`}>Inventario</a>
+    <a href={`/app/${empresas?.[0].slug}/expenses`}>Gastos</a>
+    <a href={`/app/${empresas?.[0].slug}/members`}>Miembros</a>
+    <a href={`/app/${empresas?.[0].slug}/settings`}>Configuración</a>
+    <a href="/dashboard">Selecciona otra empresa</a>
+</Layout>

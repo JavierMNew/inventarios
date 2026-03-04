@@ -6,42 +6,32 @@ export const prerender = false;
 const accessToken = Astro.cookies.get("sb-access-token");
 const refreshToken = Astro.cookies.get("sb-refresh-token");
 
-if (!accessToken || !refreshToken) {
-    return Astro.redirect("/signin");
-}
+await supabase.auth.setSession({
+    refresh_token: refreshToken!.value,
+    access_token: accessToken!.value,
+});
 
-let session;
-try {
-    session = await supabase.auth.setSession({
-        refresh_token: refreshToken.value,
-        access_token: accessToken.value,
-    });
-    if (session.error) {
-        Astro.cookies.delete("sb-access-token", {
-            path: "/",
-        });
-        Astro.cookies.delete("sb-refresh-token", {
-            path: "/",
-        });
-        return Astro.redirect("/signin");
-    }
-} catch (error) {
-    Astro.cookies.delete("sb-access-token", {
-        path: "/",
-    });
-    Astro.cookies.delete("sb-refresh-token", {
-        path: "/",
-    });
-    return Astro.redirect("/signin");
-}
+const {
+    data: { user },
+} = await supabase.auth.getUser();
+let metadata = user?.user_metadata;
 
-const email = session.data.user?.email;
+const { data: empresas } = await supabase
+    .from("empresas")
+    .select("nombre, slug");
 ---
 
 <Layout title="dashboard">
-    <h1>Bienvenido {email}</h1>
+    <h1>Bienvenido {metadata?.first_name}</h1>
     <p>Estamos felices de verte aquí</p>
     <form action="/api/auth/signout">
         <button type="submit">Cerrar sesión</button>
     </form>
+    <h1>Selecciona una empresa</h1>
+    {
+        empresas?.map((empresa) => (
+            <a href={`/app/${empresa.slug}`}>{empresa.nombre}</a>
+        ))
+    }
+    <a href="/create-company">+ Crear nueva empresa</a>
 </Layout>

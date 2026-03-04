@@ -1,0 +1,23 @@
+---
+import Layout from "../layouts/Layout.astro";
+export const prerender = false;
+---
+
+<Layout title="Crear empresa">
+    <h1>Crear empresa</h1>
+    <form action="/api/database/create-company" method="post">
+        <label for="nombre">Nombre de la empresa</label>
+        <input type="text" name="nombre" id="nombre" />
+        <label for="logo_url">Subir Logo</label>
+        <input type="file" name="logo_url" id="logo_url" />
+        <label for="config_visual">Color de la empresa</label>
+        <input type="color" name="config_visual" id="config_visual" />
+        <label for="email_contacto">Email de contacto</label>
+        <input type="email" name="email_contacto" id="email_contacto" />
+        <label for="telefono">Teléfono</label>
+        <input type="text" name="telefono" id="telefono" />
+        <label for="horarios">Horarios</label>
+        <input type="date" name="horarios" id="horarios" />
+        <button type="submit">Crear</button>
+    </form>
+</Layout>
