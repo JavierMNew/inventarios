@@ -68,11 +68,11 @@ export function TeamSwitcher({
             {empresas.map((empresa) => (
               <DropdownMenuItem
                 key={empresa.slug}
-                className="gap-2 p-2"
+                className={`gap-2 p-2 ${empresa.slug === currentSlug ? "bg-sidebar-accent font-medium" : ""}`}
                 asChild
               >
                 <a href={`/app/${empresa.slug}`}>
-                  <div className="flex size-6 items-center justify-center rounded-md border">
+                  <div className={`flex size-6 items-center justify-center rounded-md border ${empresa.slug === currentSlug ? "bg-sidebar-primary text-sidebar-primary-foreground border-sidebar-primary" : ""}`}>
                     <Building2 className="size-3.5 shrink-0" />
                   </div>
                   {empresa.nombre}

@@ -20,6 +20,7 @@ interface SidebarWrapperProps {
     slug: string
     companyName: string
     currentPage: string
+    currentPath: string
     empresas: Empresa[]
     userName: string
     userEmail: string
@@ -30,6 +31,7 @@ export function SidebarWrapper({
     slug,
     companyName,
     currentPage,
+    currentPath,
     empresas,
     userName,
     userEmail,
@@ -42,6 +44,7 @@ export function SidebarWrapper({
                 empresas={empresas}
                 userName={userName}
                 userEmail={userEmail}
+                currentPath={currentPath}
             />
             <SidebarInset>
                 <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">

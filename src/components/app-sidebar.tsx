@@ -26,6 +26,7 @@ interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   empresas: Empresa[]
   userName: string
   userEmail: string
+  currentPath: string
 }
 
 export function AppSidebar({
@@ -34,6 +35,7 @@ export function AppSidebar({
   empresas,
   userName,
   userEmail,
+  currentPath,
   ...props
 }: AppSidebarProps) {
   const navMain = [
@@ -77,7 +79,7 @@ export function AppSidebar({
         <TeamSwitcher empresas={empresas} currentSlug={slug} />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={navMain} />
+        <NavMain items={navMain} currentPath={currentPath} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={user} />

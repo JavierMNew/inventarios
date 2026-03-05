@@ -22,6 +22,7 @@ interface Props {
 
 const { title, slug, companyName, currentPage, empresas, userName, userEmail } =
     Astro.props;
+const currentPath = Astro.url.pathname;
 ---
 
 <!doctype html>
@@ -40,6 +41,7 @@ const { title, slug, companyName, currentPage, empresas, userName, userEmail } =
             slug={slug}
             companyName={companyName}
             currentPage={currentPage}
+            currentPath={currentPath}
             empresas={empresas}
             userName={userName}
             userEmail={userEmail}

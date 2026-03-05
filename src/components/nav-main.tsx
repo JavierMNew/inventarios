@@ -16,8 +16,13 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
 
+function normalizePath(path: string) {
+  return path.endsWith("/") && path.length > 1 ? path.slice(0, -1) : path
+}
+
 export function NavMain({
   items,
+  currentPath,
 }: {
   items: {
     title: string
@@ -29,7 +34,9 @@ export function NavMain({
       url: string
     }[]
   }[]
+  currentPath: string
 }) {
+  const path = normalizePath(currentPath)
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Navegación</SidebarGroupLabel>
@@ -44,7 +51,7 @@ export function NavMain({
             >
               <SidebarMenuItem>
                 <CollapsibleTrigger asChild>
-                  <SidebarMenuButton tooltip={item.title}>
+                  <SidebarMenuButton tooltip={item.title} isActive={path === item.url}>
                     {item.icon && <item.icon />}
                     <span>{item.title}</span>
                     <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
@@ -54,7 +61,7 @@ export function NavMain({
                   <SidebarMenuSub>
                     {item.items.map((subItem) => (
                       <SidebarMenuSubItem key={subItem.title}>
-                        <SidebarMenuSubButton asChild>
+                        <SidebarMenuSubButton asChild isActive={path === subItem.url}>
                           <a href={subItem.url}>
                             <span>{subItem.title}</span>
                           </a>
@@ -67,7 +74,7 @@ export function NavMain({
             </Collapsible>
           ) : (
             <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton tooltip={item.title} asChild>
+              <SidebarMenuButton tooltip={item.title} asChild isActive={path === item.url}>
                 <a href={item.url}>
                   {item.icon && <item.icon />}
                   <span>{item.title}</span>
