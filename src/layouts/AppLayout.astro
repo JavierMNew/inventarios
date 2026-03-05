@@ -5,14 +5,23 @@ import { SidebarWrapper } from "../components/sidebar-wrapper";
 
 import { ViewTransitions } from "astro:transitions";
 
+interface Empresa {
+    nombre: string;
+    slug: string;
+}
+
 interface Props {
     title: string;
     slug: string;
     companyName: string;
     currentPage: string;
+    empresas: Empresa[];
+    userName: string;
+    userEmail: string;
 }
 
-const { title, slug, companyName, currentPage } = Astro.props;
+const { title, slug, companyName, currentPage, empresas, userName, userEmail } =
+    Astro.props;
 ---
 
 <!doctype html>
@@ -31,6 +40,9 @@ const { title, slug, companyName, currentPage } = Astro.props;
             slug={slug}
             companyName={companyName}
             currentPage={currentPage}
+            empresas={empresas}
+            userName={userName}
+            userEmail={userEmail}
             client:load
         >
             <slot />

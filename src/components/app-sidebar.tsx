@@ -7,119 +7,80 @@ import {
   Receipt,
   Users,
   Settings2,
-  Building2,
-  ArrowLeft,
-  GalleryVerticalEnd,
-  AudioWaveform,
-  Command,
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
 import { NavUser } from "@/components/nav-user"
+import { TeamSwitcher, type Empresa } from "@/components/team-switcher"
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar"
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
   slug: string
   companyName: string
+  empresas: Empresa[]
+  userName: string
+  userEmail: string
 }
 
-export function AppSidebar({ slug, companyName, ...props }: AppSidebarProps) {
-  const data = {
-    user: {
-      name: "Usuario",
-      email: "usuario@ejemplo.com",
-      avatar: "",
+export function AppSidebar({
+  slug,
+  companyName,
+  empresas,
+  userName,
+  userEmail,
+  ...props
+}: AppSidebarProps) {
+  const navMain = [
+    {
+      title: "Inicio",
+      url: `/app/${slug}`,
+      icon: LayoutDashboard,
+      isActive: true,
     },
-    teams: [
-      {
-        name: "Acme Inc",
-        logo: GalleryVerticalEnd,
-        plan: "Enterprise",
-      },
-      {
-        name: "Acme Corp.",
-        logo: AudioWaveform,
-        plan: "Startup",
-      },
-      {
-        name: "Evil Corp.",
-        logo: Command,
-        plan: "Free",
-      },
-    ],
-    navMain: [
-      {
-        title: "Inicio",
-        url: `/app/${slug}`,
-        icon: LayoutDashboard,
-        isActive: true,
-      },
-      {
-        title: "Inventario",
-        url: `/app/${slug}/inventory`,
-        icon: Package,
-      },
-      {
-        title: "Gastos",
-        url: `/app/${slug}/expenses`,
-        icon: Receipt,
-      },
-      {
-        title: "Miembros",
-        url: `/app/${slug}/members`,
-        icon: Users,
-      },
-      {
-        title: "Configuración",
-        url: `/app/${slug}/settings`,
-        icon: Settings2,
-      },
-    ],
+    {
+      title: "Inventario",
+      url: `/app/${slug}/inventory`,
+      icon: Package,
+    },
+    {
+      title: "Gastos",
+      url: `/app/${slug}/expenses`,
+      icon: Receipt,
+    },
+    {
+      title: "Miembros",
+      url: `/app/${slug}/members`,
+      icon: Users,
+    },
+    {
+      title: "Configuración",
+      url: `/app/${slug}/settings`,
+      icon: Settings2,
+    },
+  ]
+
+  const user = {
+    name: userName,
+    email: userEmail,
+    avatar: "",
   }
 
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton size="lg" asChild>
-              <a href={`/app/${slug}`}>
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                  <Building2 className="size-4" />
-                </div>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{companyName}</span>
-                  <span className="truncate text-xs">Empresa</span>
-                </div>
-              </a>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
+        <TeamSwitcher empresas={empresas} currentSlug={slug} />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavMain items={navMain} />
       </SidebarContent>
       <SidebarFooter>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <a href="/dashboard">
-                <ArrowLeft />
-                <span>Cambiar empresa</span>
-              </a>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
-        <NavUser user={data.user} />
+        <NavUser user={user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

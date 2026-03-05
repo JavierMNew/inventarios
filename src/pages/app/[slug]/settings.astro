@@ -11,19 +11,28 @@ await supabase.auth.setSession({
     access_token: accessToken!.value,
 });
 
-const { data: empresas, error } = await supabase
-    .from("empresas")
-    .select("nombre, slug")
-    .eq("slug", Astro.params.slug);
+const {
+    data: { user },
+} = await supabase.auth.getUser();
+const metadata = user?.user_metadata;
 
-const empresa = empresas?.[0];
+const { data: empresas } = await supabase
+    .from("empresas")
+    .select("nombre, slug");
+
+const currentEmpresa = empresas?.find((e) => e.slug === Astro.params.slug);
 ---
 
 <AppLayout
-    title={`Configuración - ${empresa?.nombre}`}
-    slug={empresa?.slug ?? ""}
-    companyName={empresa?.nombre ?? ""}
+    title={`Configuración - ${currentEmpresa?.nombre}`}
+    slug={currentEmpresa?.slug ?? ""}
+    companyName={currentEmpresa?.nombre ?? ""}
     currentPage="Configuración"
+    empresas={empresas ?? []}
+    userName={`${metadata?.first_name ?? ""} ${metadata?.last_name ?? ""}`.trim() || user?.email?.split("@")[0] || "Usuario"}
+    userEmail={user?.email ?? ""}
 >
-    <h1 class="text-2xl font-bold">Configuración de {empresa?.nombre}</h1>
+    <h1 class="text-2xl font-bold">
+        Configuración de {currentEmpresa?.nombre}
+    </h1>
 </AppLayout>
