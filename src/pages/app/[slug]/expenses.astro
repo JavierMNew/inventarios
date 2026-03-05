@@ -1,5 +1,5 @@
 ---
-import Layout from "../../../layouts/Layout.astro";
+import AppLayout from "../../../layouts/AppLayout.astro";
 import { supabase } from "../../../lib/supabase";
 export const prerender = false;
 
@@ -15,8 +15,15 @@ const { data: empresas, error } = await supabase
     .from("empresas")
     .select("nombre, slug")
     .eq("slug", Astro.params.slug);
+
+const empresa = empresas?.[0];
 ---
 
-<Layout title={`Gastos - ${empresas?.[0].nombre}`}>
-    <h1>Gastos de {empresas?.[0].nombre}</h1>
-</Layout>
+<AppLayout
+    title={`Gastos - ${empresa?.nombre}`}
+    slug={empresa?.slug ?? ""}
+    companyName={empresa?.nombre ?? ""}
+    currentPage="Gastos"
+>
+    <h1 class="text-2xl font-bold">Gastos de {empresa?.nombre}</h1>
+</AppLayout>

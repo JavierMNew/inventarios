@@ -1,5 +1,5 @@
 ---
-import Layout from "../../../layouts/Layout.astro";
+import AppLayout from "../../../layouts/AppLayout.astro";
 import { supabase } from "../../../lib/supabase";
 export const prerender = false;
 
@@ -15,10 +15,16 @@ const { data: empresas, error } = await supabase
     .from("empresas")
     .select("nombre, slug")
     .eq("slug", Astro.params.slug);
+
+const empresa = empresas?.[0];
 ---
 
-<Layout title={`Miembros - ${empresas?.[0].nombre}`}>
-    <h1>Miembros de {empresas?.[0].nombre}</h1>
-
-    <h1>Agregar miembro a la empresa</h1>
-</Layout>
+<AppLayout
+    title={`Miembros - ${empresa?.nombre}`}
+    slug={empresa?.slug ?? ""}
+    companyName={empresa?.nombre ?? ""}
+    currentPage="Miembros"
+>
+    <h1 class="text-2xl font-bold">Miembros de {empresa?.nombre}</h1>
+    <p class="text-muted-foreground">Agregar miembro a la empresa</p>
+</AppLayout>

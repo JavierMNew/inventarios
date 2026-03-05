@@ -1,18 +1,25 @@
 ---
 import "../styles/global.css";
 import "@fontsource-variable/onest";
-import Header from "../components/Header.astro";
-import Footer from "../components/Footer.astro";
-const { title, description } = Astro.props;
+import { SidebarWrapper } from "../components/sidebar-wrapper";
 
 import { ViewTransitions } from "astro:transitions";
+
+interface Props {
+    title: string;
+    slug: string;
+    companyName: string;
+    currentPage: string;
+}
+
+const { title, slug, companyName, currentPage } = Astro.props;
 ---
 
 <!doctype html>
 <html lang="es">
     <head>
         <meta charset="UTF-8" />
-        <meta name="description" content={description} />
+        <meta name="description" content={`${currentPage} - ${companyName}`} />
         <meta name="viewport" content="width=device-width" />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <meta name="generator" content={Astro.generator} />
@@ -20,9 +27,14 @@ import { ViewTransitions } from "astro:transitions";
         <ViewTransitions />
     </head>
     <body>
-        <Header />
-        <slot />
-        <Footer />
+        <SidebarWrapper
+            slug={slug}
+            companyName={companyName}
+            currentPage={currentPage}
+            client:load
+        >
+            <slot />
+        </SidebarWrapper>
     </body>
 </html>
 
@@ -35,6 +47,7 @@ import { ViewTransitions } from "astro:transitions";
         display: flex;
         flex-direction: column;
         min-height: 100vh;
+        margin: 0;
     }
 
     @media (prefers-reduced-motion: reduce) {

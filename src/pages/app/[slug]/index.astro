@@ -1,5 +1,5 @@
 ---
-import Layout from "../../../layouts/Layout.astro";
+import AppLayout from "../../../layouts/AppLayout.astro";
 import { supabase } from "../../../lib/supabase";
 export const prerender = false;
 
@@ -15,13 +15,16 @@ const { data: empresas, error } = await supabase
     .from("empresas")
     .select("nombre, slug")
     .eq("slug", Astro.params.slug);
+
+const empresa = empresas?.[0];
 ---
 
-<Layout title={`Inicio - ${empresas?.[0].nombre}`}>
-    <h1>Estas en {empresas?.[0].nombre}</h1>
-    <a href={`/app/${empresas?.[0].slug}/inventory`}>Inventario</a>
-    <a href={`/app/${empresas?.[0].slug}/expenses`}>Gastos</a>
-    <a href={`/app/${empresas?.[0].slug}/members`}>Miembros</a>
-    <a href={`/app/${empresas?.[0].slug}/settings`}>Configuración</a>
-    <a href="/dashboard">Selecciona otra empresa</a>
-</Layout>
+<AppLayout
+    title={`Inicio - ${empresa?.nombre}`}
+    slug={empresa?.slug ?? ""}
+    companyName={empresa?.nombre ?? ""}
+    currentPage="Inicio"
+>
+    <h1 class="text-2xl font-bold">Bienvenido a {empresa?.nombre}</h1>
+    <p class="text-muted-foreground">Panel principal de tu empresa. Usa el menú lateral para navegar.</p>
+</AppLayout>
