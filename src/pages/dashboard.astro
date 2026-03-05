@@ -1,6 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import { supabase } from "../lib/supabase";
+import { Button } from "@/components/ui/button";
 export const prerender = false;
 
 const accessToken = Astro.cookies.get("sb-access-token");
@@ -42,6 +43,6 @@ const email = session.data.user?.email;
     <h1>Bienvenido {email}</h1>
     <p>Estamos felices de verte aquí</p>
     <form action="/api/auth/signout">
-        <button type="submit">Cerrar sesión</button>
+        <Button type="submit">Cerrar sesión</Button>
     </form>
 </Layout>
