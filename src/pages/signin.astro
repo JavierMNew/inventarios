@@ -1,5 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import { Button } from "@/components/ui/button";
 export const prerender = false;
 ---
 
@@ -11,6 +12,6 @@ export const prerender = false;
         <input type="email" name="email" id="email" />
         <label for="password">Contraseña</label>
         <input type="password" name="password" id="password" />
-        <button type="submit">Iniciar sesión</button>
+        <Button type="submit">Iniciar sesión</Button>
     </form>
 </Layout>

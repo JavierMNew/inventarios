@@ -1,6 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import { supabase } from "../lib/supabase";
+import { Button } from "@/components/ui/button";
 export const prerender = false;
 
 const accessToken = Astro.cookies.get("sb-access-token");
@@ -25,7 +26,7 @@ const { data: empresas } = await supabase
     <h1>Bienvenido {metadata?.first_name}</h1>
     <p>Estamos felices de verte aquí</p>
     <form action="/api/auth/signout">
-        <button type="submit">Cerrar sesión</button>
+        <Button type="submit">Cerrar sesión</Button>
     </form>
     <h1>Selecciona una empresa</h1>
     {

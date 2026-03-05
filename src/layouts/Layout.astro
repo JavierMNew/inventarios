@@ -20,10 +20,10 @@ import { ViewTransitions } from "astro:transitions";
         <ViewTransitions />
     </head>
     <body>
-        <!-- <div
-      class="fixed top-0 z-[-2] min-h-screen w-screen bg-neutral-950 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))]"
-    >
-    </div> -->
+        <div
+            class="absolute top-0 z-[-2] h-screen w-screen bg-white bg-[radial-gradient(100%_50%_at_50%_0%,rgba(0,163,255,0.13)_0,rgba(0,163,255,0)_50%,rgba(0,163,255,0)_100%)]"
+        >
+        </div>
         <Header />
         <slot />
         <Footer />
@@ -36,7 +36,7 @@ import { ViewTransitions } from "astro:transitions";
         scroll-behavior: smooth;
     }
     body {
-        background: #f4f3f0;
+        background: #6f633d;
         display: flex;
         flex-direction: column;
         min-height: 100vh;
