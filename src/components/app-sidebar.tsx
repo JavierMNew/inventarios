@@ -7,6 +7,7 @@ import {
   Receipt,
   Users,
   Settings2,
+  Building,
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -67,6 +68,15 @@ export function AppSidebar({
     },
   ]
 
+  const navNoSlug = [
+    {
+      title: "Empresas",
+      url: empresas.length > 0 ? `/dashboard` : `/create-company`,
+      icon: Building,
+      isActive: true,
+    },
+  ]
+
   const user = {
     name: userName,
     email: userEmail,
@@ -79,7 +89,7 @@ export function AppSidebar({
         <TeamSwitcher empresas={empresas} currentSlug={slug} />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={navMain} currentPath={currentPath} />
+        <NavMain items={slug ? navMain : navNoSlug} currentPath={currentPath} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={user} />

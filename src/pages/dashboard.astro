@@ -1,7 +1,7 @@
 ---
-import Layout from "../layouts/Layout.astro";
+import AppLayout from "../layouts/AppLayout.astro";
 import { supabase } from "../lib/supabase";
-import { Button } from "@/components/ui/button";
+import { EmptyOutline } from "@/components/no-projects";
 export const prerender = false;
 
 const accessToken = Astro.cookies.get("sb-access-token");
@@ -22,17 +22,28 @@ const { data: empresas } = await supabase
     .select("nombre, slug");
 ---
 
-<Layout title="dashboard">
-    <h1>Bienvenido {metadata?.first_name}</h1>
-    <p>Estamos felices de verte aquí</p>
-    <form action="/api/auth/signout">
-        <Button type="submit">Cerrar sesión</Button>
-    </form>
-    <h1>Selecciona una empresa</h1>
+<AppLayout
+    title="dashboard"
+    slug=""
+    companyName=""
+    currentPage="dashboard"
+    empresas={empresas ?? []}
+    userName={`${metadata?.first_name ?? ""} ${metadata?.last_name ?? ""}`.trim() ||
+        user?.email?.split("@")[0] ||
+        "Usuario"}
+    userEmail={user?.email ?? ""}
+>
+    <h1>Bienvenido, {metadata?.first_name}</h1>
     {
-        empresas?.map((empresa) => (
-            <a href={`/app/${empresa.slug}`}>{empresa.nombre}</a>
-        ))
+        // TODO: Implementar lista shadcn
+        empresas?.length === 0 ? (
+            <EmptyOutline />
+        ) : (
+            <>
+                {empresas?.map((empresa) => (
+                    <a href={`/app/${empresa.slug}`}>{empresa.nombre}</a>
+                ))}
+            </>
+        )
     }
-    <a href="/create-company">+ Crear nueva empresa</a>
-</Layout>
+</AppLayout>
