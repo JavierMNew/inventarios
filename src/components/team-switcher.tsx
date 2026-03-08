@@ -125,7 +125,7 @@ export function TeamSwitcher({
                 <div className="font-medium text-muted-foreground">Crear empresa</div>
               </a>
             </DropdownMenuItem>
-            {empresas[0].slug === currentSlug ? ( // TODO: Corregir lógica de empresa no mostrar en dashboard
+            {empresas.some((e) => e.slug === currentSlug) ? (
               <DropdownMenuItem className="gap-2 p-2" asChild>
                 <a href="/dashboard">
                   <div className="flex size-6 items-center justify-center rounded-md border bg-transparent">
