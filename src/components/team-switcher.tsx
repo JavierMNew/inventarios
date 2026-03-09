@@ -31,48 +31,7 @@ export function TeamSwitcher({
   currentSlug: string
 }) {
   const { isMobile } = useSidebar()
-  const activeEmpresa = empresas.find((e) => e.slug === currentSlug) ?? empresas[0]
-
-  if (!activeEmpresa) {
-    return (
-      <SidebarMenu>
-        <SidebarMenuItem>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <SidebarMenuButton
-                size="lg"
-                className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-              >
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                  <Building2 className="size-4" />
-                </div>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">Empresa</span>
-                  <span className="truncate text-xs">Seleccionar empresa</span>
-                </div>
-                <ChevronsUpDown className="ml-auto" />
-              </SidebarMenuButton>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-              className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
-              align="start"
-              side={isMobile ? "bottom" : "right"}
-              sideOffset={4}
-            >
-              <DropdownMenuItem className="gap-2 p-2" asChild>
-                <a href="/create-company">
-                  <div className="flex size-6 items-center justify-center rounded-md border bg-transparent">
-                    <Plus className="size-4" />
-                  </div>
-                  <div className="font-medium text-muted-foreground">Crear empresa</div>
-                </a>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </SidebarMenuItem>
-      </SidebarMenu>
-    )
-  }
+  const activeEmpresa = empresas.find((e) => e.slug === currentSlug)
 
   return (
     <SidebarMenu>
@@ -87,8 +46,12 @@ export function TeamSwitcher({
                 <Building2 className="size-4" />
               </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{activeEmpresa.nombre}</span>
-                <span className="truncate text-xs">Empresa</span>
+                <span className="truncate font-medium">
+                  {activeEmpresa ? activeEmpresa.nombre : "Empresa"}
+                </span>
+                <span className="truncate text-xs">
+                  {activeEmpresa ? "Empresa" : "Seleccionar empresa"}
+                </span>
               </div>
               <ChevronsUpDown className="ml-auto" />
             </SidebarMenuButton>
@@ -125,7 +88,7 @@ export function TeamSwitcher({
                 <div className="font-medium text-muted-foreground">Crear empresa</div>
               </a>
             </DropdownMenuItem>
-            {empresas.some((e) => e.slug === currentSlug) ? (
+            {activeEmpresa && (
               <DropdownMenuItem className="gap-2 p-2" asChild>
                 <a href="/dashboard">
                   <div className="flex size-6 items-center justify-center rounded-md border bg-transparent">
@@ -134,7 +97,7 @@ export function TeamSwitcher({
                   <div className="font-medium text-muted-foreground">Volver al dashboard</div>
                 </a>
               </DropdownMenuItem>
-            ) : null}
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>

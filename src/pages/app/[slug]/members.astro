@@ -1,4 +1,5 @@
 ---
+import { EmptyOutline } from "@/components/no-projects";
 import AppLayout from "../../../layouts/AppLayout.astro";
 import { supabase } from "../../../lib/supabase";
 export const prerender = false;
@@ -18,9 +19,23 @@ const metadata = user?.user_metadata;
 
 const { data: empresas } = await supabase
     .from("empresas")
-    .select("nombre, slug");
+    .select("id, nombre, slug");
 
 const currentEmpresa = empresas?.find((e) => e.slug === Astro.params.slug);
+
+const { data: miembros } = await supabase
+    .from("miembros_empresa")
+    .select(
+        `
+        user_id,
+        rol,
+        empresa_id,
+        profiles ( first_name, last_name )
+    `,
+    )
+    .eq("empresa_id", currentEmpresa?.id ?? "");
+
+console.log("miembros:", JSON.stringify(miembros, null, 2));
 ---
 
 <AppLayout
@@ -29,9 +44,34 @@ const currentEmpresa = empresas?.find((e) => e.slug === Astro.params.slug);
     companyName={currentEmpresa?.nombre ?? ""}
     currentPage="Miembros"
     empresas={empresas ?? []}
-    userName={`${metadata?.first_name ?? ""} ${metadata?.last_name ?? ""}`.trim() || user?.email?.split("@")[0] || "Usuario"}
+    userName={`${metadata?.first_name ?? ""} ${metadata?.last_name ?? ""}`.trim() ||
+        user?.email?.split("@")[0] ||
+        "Usuario"}
     userEmail={user?.email ?? ""}
 >
     <h1 class="text-2xl font-bold">Miembros de {currentEmpresa?.nombre}</h1>
+    <!--TODO: Lista de miembros fix-->
+    {
+        miembros && miembros.length > 0 ? (
+            <div class="grid gap-4">
+                {miembros.map((item) => {
+                    const profile = Array.isArray(item.profiles)
+                        ? item.profiles[0]
+                        : item.profiles;
+                    return (
+                        <p>
+                            Nombre: {profile?.first_name} {profile?.last_name}
+                            <br />
+                            Rol: {item.rol} <br />
+                            ID Empresa: {item.empresa_id}
+                        </p>
+                    );
+                })}
+            </div>
+        ) : (
+            <EmptyOutline />
+        )
+    }
+    <!-- Agregar miembros -->
     <p class="text-muted-foreground">Agregar miembro a la empresa</p>
 </AppLayout>
