@@ -18,6 +18,7 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
     });
 
     if (error) {
+        // TODO: Handle error
         return new Response(error.message, { status: 500 });
     }
 

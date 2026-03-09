@@ -1,23 +1,42 @@
 ---
+import { GalleryVerticalEnd } from "lucide-react";
 import Layout from "../layouts/Layout.astro";
-import { Button } from "@/components/ui/button";
+import { SignupForm } from "@/components/signup-form";
 export const prerender = false;
 ---
 
 <Layout title="Registro - SERDISUR">
-        <h1>Registrarse</h1>
-        <p>Ya tienes una cuenta? <a href="/signin">Iniciar sesión</a></p>
-        <form action="/api/auth/register" method="post">
-                <label for="email">Email</label>
-                <input type="email" name="email" id="email" />
-                <label for="password">Contraseña</label>
-                <input type="password" name="password" id="password" />
-                <label for="first_name">Nombre</label>
-                <input type="text" name="first_name" id="first_name" />
-                <label for="last_name">Apellidos</label>
-                <input type="text" name="last_name" id="last_name" />
-                <label for="phone">Teléfono</label>
-                <input type="text" name="phone" id="phone" />
-                <Button type="submit">Registrarse</Button>
-        </form>
+        <div class="grid min-h-svh lg:grid-cols-2">
+                <div class="flex flex-col gap-4 p-6 md:p-10">
+                        <div class="flex justify-center gap-2 md:justify-start">
+                                <a
+                                        href="/"
+                                        class="flex items-center gap-2 font-medium"
+                                >
+                                        <div
+                                                class="flex size-6 items-center justify-center rounded-md bg-primary text-primary-foreground"
+                                        >
+                                                <img
+                                                        src="/logo.png"
+                                                        alt="Logo"
+                                                        class="size-4"
+                                                />
+                                        </div>
+                                        SERDISUR
+                                </a>
+                        </div>
+                        <div class="flex flex-1 items-center justify-center">
+                                <div class="w-full max-w-xs">
+                                        <SignupForm />
+                                </div>
+                        </div>
+                </div>
+                <div class="relative hidden bg-muted lg:block">
+                        <img
+                                src="/placeholder.svg"
+                                alt="Image"
+                                class="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
+                        />
+                </div>
+        </div>
 </Layout>
