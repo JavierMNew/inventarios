@@ -23,7 +23,11 @@ const { data: empresas } = await supabase
 
 const currentEmpresa = empresas?.find((e) => e.slug === Astro.params.slug);
 
-const { data: miembros } = await supabase
+if (!currentEmpresa) {
+    return Astro.redirect("/app");
+}
+
+const { data: miembros, error: fetchMembersError } = await supabase
     .from("miembros_empresa")
     .select(
         `
@@ -33,7 +37,11 @@ const { data: miembros } = await supabase
         profiles ( first_name, last_name )
     `,
     )
-    .eq("empresa_id", currentEmpresa?.id ?? "");
+    .eq("empresa_id", currentEmpresa.id);
+
+if (fetchMembersError) {
+    console.error("Error fetching members:", fetchMembersError);
+}
 
 console.log("miembros:", JSON.stringify(miembros, null, 2));
 ---
