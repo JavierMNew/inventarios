@@ -1,0 +1,51 @@
+---
+import { Button } from "@/components/ui/button";
+---
+
+<header class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+  <div class="px-6 py-4 mx-auto max-w-7xl">
+    <!-- TODO: Fix header in new pages -->
+    <nav
+      class="flex items-center justify-between px-6 py-3 mx-auto rounded-full bg-background/70 backdrop-blur-xl border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.04)]"
+    >
+      <div class="flex items-center gap-8">
+        <a
+          href="/"
+          class="text-xl font-heading font-bold tracking-tight text-primary"
+        >
+          Ethereal<span class="text-foreground">SaaS</span>
+        </a>
+        <div class="hidden md:flex items-center gap-6">
+          <a
+            href="/funcionalidades"
+            class="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >Funcionalidades</a
+          >
+          <a
+            href="/precios"
+            class="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >Precios</a
+          >
+          <a
+            href="/sobre-nosotros"
+            class="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >Sobre Nosotros</a
+          >
+        </div>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <a
+          href="/signin"
+          class="text-sm font-medium text-foreground hover:text-primary transition-colors"
+          >Iniciar sesión</a
+        >
+        <Button
+          className="rounded-full bg-gradient-to-br from-primary to-[#006b3d] hover:shadow-lg hover:shadow-primary/20 transition-all text-white border-0"
+        >
+          Prueba de 14 días
+        </Button>
+      </div>
+    </nav>
+  </div>
+</header>

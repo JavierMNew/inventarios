@@ -1,0 +1,69 @@
+.theme-ethereal {
+  --radius: 1rem;
+  --background: #f8f9fa;
+  --foreground: #191c1d;
+  --card: #f3f4f5;
+  --card-foreground: #191c1d;
+  --popover: #ffffff;
+  --popover-foreground: #191c1d;
+  --primary: #00502c;
+  --primary-foreground: #ffffff;
+  --secondary: #e2e2e5;
+  --secondary-foreground: #191c1d;
+  --muted: #e1e3e4;
+  --muted-foreground: #636467;
+  --accent: #edeeef;
+  --accent-foreground: #191c1d;
+  --destructive: #ba1a1a;
+  --destructive-foreground: #ffffff;
+  --border: #bec9be;
+  --input: #e7e8e9;
+  --ring: #00502c;
+  --chart-1: #00502c;
+  --chart-2: #006b3d;
+  --chart-3: #81d9a0;
+  --chart-4: #6f7a70;
+  --chart-5: #bec9be;
+  --sidebar: #f8f9fa;
+  --sidebar-foreground: #191c1d;
+  --sidebar-primary: #00502c;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #e2e2e5;
+  --sidebar-accent-foreground: #191c1d;
+  --sidebar-border: #bec9be;
+  --sidebar-ring: #00502c;
+
+  /* Font overrides specific to the theme class */
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-heading: "Manrope Variable", ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-sans);
+}
+
+.theme-ethereal.dark {
+  /* Using same logic if they test dark mode, but ethereal defaults to light */
+  --background: #191c1d;
+  --foreground: #f8f9fa;
+  --card: #2e3132;
+  --card-foreground: #f8f9fa;
+  --popover: #2e3132;
+  --popover-foreground: #f8f9fa;
+  --primary: #9df5bb;
+  --primary-foreground: #00210f;
+  --secondary: #454749;
+  --secondary-foreground: #f8f9fa;
+  --muted: #3f4941;
+  --muted-foreground: #bec9be;
+  --border: #6f7a70;
+  --input: #3f4941;
+  --ring: #9df5bb;
+}
+
+.theme-ethereal h1, 
+.theme-ethereal h2, 
+.theme-ethereal h3, 
+.theme-ethereal h4, 
+.theme-ethereal h5, 
+.theme-ethereal h6, 
+.theme-ethereal .font-heading {
+  font-family: var(--font-heading);
+}
