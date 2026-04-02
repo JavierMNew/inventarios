@@ -1,0 +1,18 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Crear miembro">
+    <h1>Crear miembro</h1>
+    <form action="/api/database/create-member" method="post">
+        <label for="nombre">Nombre del miembro</label>
+        <input type="text" name="nombre" id="nombre" />
+        <label for="email">Email del miembro</label>
+        <input type="email" name="email" id="email" />
+        <label for="password">Contraseña del miembro</label>
+        <input type="password" name="password" id="password" />
+        <label for="rol">Rol del miembro</label>
+        <input type="text" name="rol" id="rol" />
+        <button type="submit">Crear</button>
+    </form>
+</Layout>

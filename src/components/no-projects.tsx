@@ -24,3 +24,20 @@ export function EmptyOutline() {
     </Empty>
   )
 }
+export function EmptyMembers() {
+  return (
+    <Empty className="border border-dashed">
+      <EmptyHeader>
+        <EmptyTitle>No tienes miembros</EmptyTitle>
+        <EmptyDescription>
+          Agrega miembros a la empresa para para aumentar la productividad.
+        </EmptyDescription>
+      </EmptyHeader>
+      <EmptyContent>
+        <Button variant="default">
+          <a href="/create-member">Agregar miembro</a>
+        </Button>
+      </EmptyContent>
+    </Empty>
+  )
+}
