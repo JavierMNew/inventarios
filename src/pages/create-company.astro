@@ -1,23 +1,44 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import { actions } from "astro:actions";
+
 export const prerender = false;
+
+const result = Astro.getActionResult(actions.createCompany);
+if (result && !result.error) {
+    return Astro.redirect(`/app/${result.data.slug}`);
+}
 ---
 
 <Layout title="Crear empresa">
     <h1>Crear empresa</h1>
-    <form action="/api/database/create-company" method="post">
+    
+    {result?.error && (
+        <div style="color: #ef4444; background: #fee2e2; padding: 1rem; border-radius: 0.375rem; margin-bottom: 1rem;">
+            <strong>Error:</strong> {result.error.message}
+        </div>
+    )}
+
+    <form action={actions.createCompany} method="post">
         <label for="nombre">Nombre de la empresa</label>
-        <input type="text" name="nombre" id="nombre" />
-        <label for="logo_url">Subir Logo</label>
-        <input type="file" name="logo_url" id="logo_url" />
+        <input type="text" name="nombre" id="nombre" required />
+        
+        <label for="logo_url">URL del Logo (Opcional)</label>
+        <input type="text" name="logo_url" id="logo_url" placeholder="https://ejemplo.com/logo.png" />
+        
         <label for="config_visual">Color de la empresa</label>
         <input type="color" name="config_visual" id="config_visual" />
+        
         <label for="email_contacto">Email de contacto</label>
-        <input type="email" name="email_contacto" id="email_contacto" />
+        <input type="email" name="email_contacto" id="email_contacto" required />
+        
         <label for="telefono">Teléfono</label>
-        <input type="text" name="telefono" id="telefono" />
-        <label for="horarios">Horarios</label>
-        <input type="date" name="horarios" id="horarios" />
+        <input type="text" name="telefono" id="telefono" required />
+        
+        <label for="horarios">Horarios (Opcional)</label>
+        <input type="text" name="horarios" id="horarios" placeholder="Lun - Vie 9:00 - 18:00" />
+        
         <button type="submit">Crear</button>
     </form>
 </Layout>
+

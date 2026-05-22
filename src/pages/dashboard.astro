@@ -2,6 +2,9 @@
 import AppLayout from "../layouts/AppLayout.astro";
 import { supabase } from "../lib/supabase";
 import { EmptyOutline } from "@/components/no-projects";
+import PageHeader from "@/components/page-header.astro";
+import { buttonVariants } from "@/components/ui/button";
+import { Building2, Plus, ArrowRight, Users, Package, Coins, Building } from "lucide-react";
 export const prerender = false;
 
 const accessToken = Astro.cookies.get("sb-access-token");
@@ -19,11 +22,30 @@ let metadata = user?.user_metadata;
 
 const { data: empresas } = await supabase
     .from("empresas")
-    .select("nombre, slug");
+    .select("id, nombre, slug");
+
+// Crear estadísticas simuladas realistas para cada empresa en la vista global
+const companiesStatsMock = {};
+empresas?.forEach((emp, index) => {
+    const colors = [
+        "from-violet-500/20 to-fuchsia-500/20 text-violet-500 border-violet-500/20",
+        "from-blue-500/20 to-cyan-500/20 text-blue-500 border-blue-500/20",
+        "from-emerald-500/20 to-teal-500/20 text-emerald-500 border-emerald-500/20",
+        "from-amber-500/20 to-orange-500/20 text-amber-500 border-amber-500/20"
+    ];
+    companiesStatsMock[emp.id] = {
+        miembros: 3 + (index % 3),
+        productos: 140 + (index * 45),
+        gastos: 4800 + (index * 1950),
+        color: colors[index % colors.length]
+    };
+});
+
+const greetingName = metadata?.first_name || user?.email?.split("@")[0] || "Usuario";
 ---
 
 <AppLayout
-    title="dashboard"
+    title="Panel Global"
     slug=""
     companyName=""
     currentPage="dashboard"
@@ -33,17 +55,99 @@ const { data: empresas } = await supabase
         "Usuario"}
     userEmail={user?.email ?? ""}
 >
-    <h1>Bienvenido, {metadata?.first_name}</h1>
-    {
-        // TODO: Implementar lista shadcn
-        empresas?.length === 0 ? (
-            <EmptyOutline />
-        ) : (
-            <>
-                {empresas?.map((empresa) => (
-                    <a href={`/app/${empresa.slug}`}>{empresa.nombre}</a>
-                ))}
-            </>
-        )
-    }
+    <div class="space-y-6 w-full py-2">
+        {/* Cabecera Premium */}
+        <PageHeader 
+            title={`¡Hola de nuevo, ${greetingName}!`} 
+            description="Bienvenido al centro de control global de tus empresas. Selecciona un espacio de trabajo para comenzar a operar."
+        >
+            <Building slot="icon" className="size-5" />
+            
+            <a 
+                href="/create-company" 
+                class={`${buttonVariants()} shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 group font-semibold`}
+                slot="actions"
+            >
+                <Plus className="size-4 transition-transform duration-300 group-hover:rotate-90" />
+                Crear nueva empresa
+            </a>
+        </PageHeader>
+
+        {/* Listado de empresas del usuario */}
+        {
+            empresas?.length === 0 ? (
+                <div class="flex flex-col items-center justify-center p-8 border border-dashed rounded-2xl bg-card/40 backdrop-blur-md">
+                    <EmptyOutline />
+                </div>
+            ) : (
+                <div class="space-y-4">
+                    <h3 class="text-lg font-bold text-foreground">Tus Empresas y Espacios de Trabajo</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {empresas?.map((empresa) => {
+                            const stats = companiesStatsMock[empresa.id] || {
+                                miembros: 1,
+                                productos: 0,
+                                gastos: 0,
+                                color: "from-slate-500/20 to-zinc-500/20 text-slate-500 border-slate-500/20"
+                            };
+
+                            return (
+                                <div class="relative border border-border/85 rounded-2xl p-6 bg-card/40 backdrop-blur-md transition-all duration-300 flex flex-col justify-between group overflow-hidden hover:shadow-md hover:-translate-y-1">
+                                    {/* Glow decorativo de fondo */}
+                                    <div class={`absolute -top-12 -right-12 size-24 rounded-full bg-gradient-to-br ${stats.color.split(' ')[0]} ${stats.color.split(' ')[1]} blur-2xl opacity-50 group-hover:scale-150 transition-transform duration-500`} />
+
+                                    <div class="space-y-4 relative z-10">
+                                        <div class="flex items-start justify-between">
+                                            <div class="space-y-1">
+                                                <h3 class="font-extrabold text-lg text-foreground tracking-tight line-clamp-1">{empresa.nombre}</h3>
+                                                <p class="text-xs font-mono text-muted-foreground">/{empresa.slug}</p>
+                                            </div>
+                                            <div class={`p-2 rounded-xl border ${stats.color}`}>
+                                                <Building2 className="size-4.5" />
+                                            </div>
+                                        </div>
+
+                                        {/* Métricas del Workspace */}
+                                        <div class="grid grid-cols-3 gap-2 border-t border-b border-border/40 py-3.5 my-2">
+                                            <div class="text-center space-y-1">
+                                                <span class="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider block">Miembros</span>
+                                                <span class="text-sm font-bold text-foreground flex items-center justify-center gap-1">
+                                                    <Users className="size-3 text-muted-foreground" />
+                                                    {stats.miembros}
+                                                </span>
+                                            </div>
+                                            <div class="text-center space-y-1 border-l border-r border-border/40">
+                                                <span class="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider block">Productos</span>
+                                                <span class="text-sm font-bold text-foreground flex items-center justify-center gap-1">
+                                                    <Package className="size-3 text-muted-foreground" />
+                                                    {stats.productos}
+                                                </span>
+                                            </div>
+                                            <div class="text-center space-y-1">
+                                                <span class="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider block">Gastos</span>
+                                                <span class="text-sm font-bold text-foreground flex items-center justify-center gap-0.5">
+                                                    <Coins className="size-3 text-muted-foreground" />
+                                                    ${(stats.gastos / 1000).toFixed(1)}k
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-4 pt-2 relative z-10">
+                                        <a 
+                                            href={`/app/${empresa.slug}`} 
+                                            class={`${buttonVariants({ variant: "outline" })} w-full shadow-xs font-semibold gap-2 group/btn hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300 cursor-pointer`}
+                                        >
+                                            Entrar al Workspace
+                                            <ArrowRight className="size-4 transition-transform duration-300 group-hover/btn:translate-x-1" />
+                                        </a>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+            )
+        }
+    </div>
 </AppLayout>

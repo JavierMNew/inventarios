@@ -1,6 +1,9 @@
 ---
 import AppLayout from "../../../layouts/AppLayout.astro";
 import { supabase } from "../../../lib/supabase";
+import PageHeader from "@/components/page-header.astro";
+import { buttonVariants } from "@/components/ui/button";
+import { Receipt, Plus, DollarSign, TrendingUp, Wallet, ArrowUpRight, ChevronRight } from "lucide-react";
 export const prerender = false;
 
 const accessToken = Astro.cookies.get("sb-access-token");
@@ -32,5 +35,141 @@ const currentEmpresa = empresas?.find((e) => e.slug === Astro.params.slug);
     userName={`${metadata?.first_name ?? ""} ${metadata?.last_name ?? ""}`.trim() || user?.email?.split("@")[0] || "Usuario"}
     userEmail={user?.email ?? ""}
 >
-    <h1 class="text-2xl font-bold">Gastos de {currentEmpresa?.nombre}</h1>
+    <div class="space-y-6 w-full py-2">
+        {/* Cabecera Premium Reutilizable */}
+        <PageHeader 
+            title="Gastos" 
+            description={`Realiza el seguimiento, control y categorización de todos los egresos de ${currentEmpresa?.nombre}.`}
+        >
+            <Receipt slot="icon" className="size-5" />
+            
+            <a 
+                href="#" 
+                class={`${buttonVariants()} shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 group font-semibold`}
+                slot="actions"
+            >
+                <Plus className="size-4 transition-transform duration-300 group-hover:rotate-90" />
+                Registrar gasto
+            </a>
+        </PageHeader>
+
+        {/* Tarjetas de Resumen (Stats Cards) */}
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="p-6 border border-border/80 rounded-2xl bg-card/40 backdrop-blur-md shadow-xs flex flex-col justify-between hover:shadow-md transition-all duration-300 group">
+                <div class="flex items-center justify-between">
+                    <span class="text-sm font-medium text-muted-foreground">Total Gastos del Mes</span>
+                    <div class="p-2 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 rounded-lg border border-emerald-500/20">
+                        <Wallet className="size-4" />
+                    </div>
+                </div>
+                <div class="mt-4 space-y-1">
+                    <h3 class="text-3xl font-extrabold tracking-tight text-foreground">$14,250.00</h3>
+                    <p class="text-xs text-muted-foreground flex items-center gap-1">
+                        <TrendingUp className="size-3 text-emerald-500" />
+                        <span class="text-emerald-500 font-semibold">-8.2%</span> respecto al mes anterior
+                    </p>
+                </div>
+            </div>
+
+            <div class="p-6 border border-border/80 rounded-2xl bg-card/40 backdrop-blur-md shadow-xs flex flex-col justify-between hover:shadow-md transition-all duration-300 group">
+                <div class="flex items-center justify-between">
+                    <span class="text-sm font-medium text-muted-foreground">Gastos Fijos</span>
+                    <div class="p-2 bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-lg border border-blue-500/20">
+                        <DollarSign className="size-4" />
+                    </div>
+                </div>
+                <div class="mt-4 space-y-1">
+                    <h3 class="text-3xl font-extrabold tracking-tight text-foreground">$8,900.00</h3>
+                    <p class="text-xs text-muted-foreground">Presupuesto mensual controlado</p>
+                </div>
+            </div>
+
+            <div class="p-6 border border-border/80 rounded-2xl bg-card/40 backdrop-blur-md shadow-xs flex flex-col justify-between hover:shadow-md transition-all duration-300 group">
+                <div class="flex items-center justify-between">
+                    <span class="text-sm font-medium text-muted-foreground">Gastos Variables</span>
+                    <div class="p-2 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-lg border border-amber-500/20">
+                        <ArrowUpRight className="size-4" />
+                    </div>
+                </div>
+                <div class="mt-4 space-y-1">
+                    <h3 class="text-3xl font-extrabold tracking-tight text-foreground">$5,350.00</h3>
+                    <p class="text-xs text-muted-foreground">Sujeto a variaciones de inventario</p>
+                </div>
+            </div>
+        </div>
+
+        {/* Tabla Coherente de Gastos (Premium UI Table) */}
+        <div class="border border-border/85 rounded-2xl bg-card/30 backdrop-blur-md overflow-hidden shadow-xs">
+            <div class="p-5 border-b border-border/80 flex items-center justify-between">
+                <div>
+                    <h3 class="text-lg font-bold text-foreground">Egresos Recientes</h3>
+                    <p class="text-xs text-muted-foreground">Listado general de compras y salidas operativas</p>
+                </div>
+                <button class="text-xs font-semibold text-primary hover:text-primary/80 transition-colors flex items-center gap-1">
+                    Ver todos los históricos <ChevronRight className="size-3" />
+                </button>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left border-collapse">
+                    <thead>
+                        <tr class="bg-muted/40 text-muted-foreground font-semibold text-xs border-b border-border/50">
+                            <th class="p-4 pl-6">Descripción</th>
+                            <th class="p-4">Categoría</th>
+                            <th class="p-4">Fecha</th>
+                            <th class="p-4">Monto</th>
+                            <th class="p-4 pr-6 text-right">Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-border/40">
+                        <tr class="hover:bg-muted/20 transition-colors">
+                            <td class="p-4 pl-6 font-semibold text-foreground">Compra de materia prima A</td>
+                            <td class="p-4">
+                                <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-violet-500/10 text-violet-600 dark:text-violet-400 border border-violet-500/10">
+                                    Inventario
+                                </span>
+                            </td>
+                            <td class="p-4 text-muted-foreground">2026-05-20</td>
+                            <td class="p-4 font-bold text-foreground">$4,500.00</td>
+                            <td class="p-4 pr-6 text-right">
+                                <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/10">
+                                    Pagado
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-muted/20 transition-colors">
+                            <td class="p-4 pl-6 font-semibold text-foreground">Pago de servicio de electricidad</td>
+                            <td class="p-4">
+                                <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/10">
+                                    Servicios
+                                </span>
+                            </td>
+                            <td class="p-4 text-muted-foreground">2026-05-18</td>
+                            <td class="p-4 font-bold text-foreground">$1,200.00</td>
+                            <td class="p-4 pr-6 text-right">
+                                <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/10">
+                                    Pagado
+                                </span>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-muted/20 transition-colors">
+                            <td class="p-4 pl-6 font-semibold text-foreground">Mantenimiento de maquinaria</td>
+                            <td class="p-4">
+                                <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/10">
+                                    Operación
+                                </span>
+                            </td>
+                            <td class="p-4 text-muted-foreground">2026-05-15</td>
+                            <td class="p-4 font-bold text-foreground">$3,800.00</td>
+                            <td class="p-4 pr-6 text-right">
+                                <span class="px-2 py-0.5 rounded-full text-xs font-bold bg-muted text-muted-foreground border border-border/80">
+                                    Pendiente
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </AppLayout>

@@ -1,7 +1,11 @@
 ---
-import { EmptyMembers, EmptyOutline } from "@/components/no-projects";
+import { EmptyMembers } from "@/components/no-projects";
 import AppLayout from "../../../layouts/AppLayout.astro";
 import { supabase } from "../../../lib/supabase";
+import { buttonVariants } from "@/components/ui/button";
+import { MembersList } from "@/components/members-list";
+import PageHeader from "@/components/page-header.astro";
+import { Plus, Users } from "lucide-react";
 export const prerender = false;
 
 const accessToken = Astro.cookies.get("sb-access-token");
@@ -34,7 +38,7 @@ const { data: miembros, error: fetchMembersError } = await supabase
         user_id,
         rol,
         empresa_id,
-        profiles ( first_name, last_name )
+        profiles ( first_name, last_name, email )
     `,
     )
     .eq("empresa_id", currentEmpresa.id);
@@ -43,7 +47,9 @@ if (fetchMembersError) {
     console.error("Error fetching members:", fetchMembersError);
 }
 
-console.log("miembros:", JSON.stringify(miembros, null, 2));
+// Verificar si el usuario actual tiene permisos de administración
+const currentUserMember = miembros?.find((m) => m.user_id === user?.id);
+const isAdminOrOwner = currentUserMember ? ['owner', 'admin'].includes(currentUserMember.rol) : false;
 ---
 
 <AppLayout
@@ -57,29 +63,41 @@ console.log("miembros:", JSON.stringify(miembros, null, 2));
         "Usuario"}
     userEmail={user?.email ?? ""}
 >
-    <h1 class="text-2xl font-bold">Miembros de {currentEmpresa?.nombre}</h1>
-    <!--TODO: Lista de miembros fix-->
-    {
-        miembros && miembros.length > 0 ? (
-            <div class="grid gap-4">
-                {miembros.map((item) => {
-                    const profile = Array.isArray(item.profiles)
-                        ? item.profiles[0]
-                        : item.profiles;
-                    return (
-                        <p>
-                            Nombre: {profile?.first_name} {profile?.last_name}
-                            <br />
-                            Rol: {item.rol} <br />
-                            ID Empresa: {item.empresa_id}
-                        </p>
-                    );
-                })}
-            </div>
-        ) : (
-            <EmptyMembers />
-        )
-    }
-    <!-- Agregar miembros -->
-    <p class="text-muted-foreground">Agregar miembro a la empresa</p>
+    <div class="space-y-6 w-full py-2">
+        {/* Cabecera Premium */}
+        <PageHeader 
+            title="Miembros" 
+            description={`Administra y gestiona los roles y accesos del equipo de ${currentEmpresa?.nombre}`}
+        >
+            <Users slot="icon" className="size-5" />
+            
+            {isAdminOrOwner && (
+                <a 
+                    href="/create-member" 
+                    class={`${buttonVariants()} shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 group font-semibold`}
+                    slot="actions"
+                >
+                    <Plus className="size-4 transition-transform duration-300 group-hover:rotate-90" />
+                    Agregar miembro
+                </a>
+            )}
+        </PageHeader>
+
+        {/* Listado Interactivo */}
+        {
+            miembros && miembros.length > 0 ? (
+                <MembersList 
+                    client:load 
+                    initialMembers={miembros as any} 
+                    currentUserId={user?.id ?? ""}
+                    companyId={currentEmpresa.id}
+                    isAdminOrOwner={isAdminOrOwner}
+                />
+            ) : (
+                <div class="flex flex-col items-center justify-center p-8 border border-dashed rounded-xl bg-card/40 backdrop-blur-md">
+                    <EmptyMembers />
+                </div>
+            )
+        }
+    </div>
 </AppLayout>

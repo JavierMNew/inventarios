@@ -1,18 +1,89 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import { actions } from "astro:actions";
+import { getSupabase } from "../lib/supabase";
+
+export const prerender = false;
+
+// 1. Obtener cliente de Supabase seguro
+const supabaseClient = await getSupabase(Astro.cookies);
+
+// Obtener el usuario autenticado
+const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
+
+// 2. Traer todas las empresas visibles para el usuario (restringidas por RLS)
+const { data: allEmpresas, error: empresasError } = await supabaseClient
+    .from("empresas")
+    .select("id, nombre, dueño_id");
+
+// 3. Traer las membresías del usuario
+const { data: memberships, error: fetchError } = await supabaseClient
+    .from("miembros_empresa")
+    .select("empresa_id, rol")
+    .in("rol", ["owner", "admin"]);
+
+if (empresasError) {
+    console.error("Error al obtener empresas:", empresasError);
+}
+if (fetchError) {
+    console.error("Error al obtener membresías:", fetchError);
+}
+
+const adminCompanyIds = memberships ? memberships.map((m: any) => m.empresa_id) : [];
+
+// Mapear y filtrar las empresas de forma segura (donde el usuario es dueño directo o miembro administrador)
+const empresas = allEmpresas && user
+    ? allEmpresas.filter((emp: any) => emp.dueño_id === user.id || adminCompanyIds.includes(emp.id))
+    : [];
+
+// 3. Procesar el resultado de la acción
+const result = Astro.getActionResult(actions.createMember);
+const isSuccess = result && !result.error;
 ---
 
-<Layout title="Crear miembro">
-    <h1>Crear miembro</h1>
-    <form action="/api/database/create-member" method="post">
-        <label for="nombre">Nombre del miembro</label>
-        <input type="text" name="nombre" id="nombre" />
-        <label for="email">Email del miembro</label>
-        <input type="email" name="email" id="email" />
-        <label for="password">Contraseña del miembro</label>
-        <input type="password" name="password" id="password" />
-        <label for="rol">Rol del miembro</label>
-        <input type="text" name="rol" id="rol" />
-        <button type="submit">Crear</button>
-    </form>
+<Layout title="Agregar miembro">
+    <h1>Agregar miembro a una empresa</h1>
+    
+    {result?.error && (
+        <div style="color: #ef4444; background: #fee2e2; padding: 1rem; border-radius: 0.375rem; margin-bottom: 1rem;">
+            <strong>Error:</strong> {result.error.message}
+        </div>
+    )}
+
+    {isSuccess && (
+        <div style="color: #15803d; background: #dcfce7; padding: 1rem; border-radius: 0.375rem; margin-bottom: 1rem;">
+            <strong>¡Éxito!</strong> Miembro agregado correctamente a la empresa.
+        </div>
+    )}
+
+    {empresas.length === 0 ? (
+        <div style="background: #f3f4f6; padding: 2rem; border-radius: 0.375rem; text-align: center; color: #4b5563;">
+            <p>No tienes empresas bajo tu administración (debes ser Owner o Admin) para poder agregar miembros.</p>
+            <a href="/create-company" style="color: #2563eb; text-decoration: underline;">Crear una empresa primero</a>
+        </div>
+    ) : (
+        <form action={actions.createMember} method="post">
+            <label for="empresa_id">Selecciona la empresa</label>
+            <select name="empresa_id" id="empresa_id" required style="width: 100%; padding: 0.5rem; border-radius: 0.375rem; margin-bottom: 1rem; border: 1px solid #d1d5db; background: white;">
+                {empresas.map((empresa: any) => (
+                    <option value={empresa.id}>{empresa.nombre}</option>
+                ))}
+            </select>
+
+            <label for="email">Email del miembro</label>
+            <input type="email" name="email" id="email" required placeholder="correo@ejemplo.com" style="width: 100%; padding: 0.5rem; border-radius: 0.375rem; margin-bottom: 1rem; border: 1px solid #d1d5db;" />
+
+            <label for="rol">Rol del miembro</label>
+            <select name="rol" id="rol" required style="width: 100%; padding: 0.5rem; border-radius: 0.375rem; margin-bottom: 1rem; border: 1px solid #d1d5db; background: white;">
+                <option value="ayudante">Ayudante (Lectura y operaciones básicas)</option>
+                <option value="contador">Contador (Ver y registrar finanzas)</option>
+                <option value="admin">Administrador (Gestión total de la empresa)</option>
+            </select>
+
+            <button type="submit" style="background: #2563eb; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 0.375rem; cursor: pointer; font-weight: bold;">
+                Agregar Miembro
+            </button>
+        </form>
+    )}
 </Layout>
+
