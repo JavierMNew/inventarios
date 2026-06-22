@@ -1,0 +1,64 @@
+---
+const pathname = Astro.url.pathname;
+const isAuthPage = pathname === "/signin" || pathname === "/register";
+const currentYear = new Date().getFullYear();
+---
+
+{!isAuthPage && (
+  <footer class="w-full border-t border-border/40 bg-muted/40 py-12 md:py-16">
+    <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-4">
+        <div class="flex flex-col gap-4">
+          <a href="/" class="flex items-center gap-2 font-bold text-foreground">
+            <div class="flex h-7 w-7 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-sm">
+              <img src="/logo.png" alt="Logo" class="h-4.5 w-4.5 object-contain invert" onError="this.style.display='none'" />
+            </div>
+            <span class="text-lg tracking-tight font-extrabold">SERDISUR</span>
+          </a>
+          <p class="text-xs text-muted-foreground max-w-xs leading-relaxed">
+            Servicios Digitales del Sureste. Soluciones avanzadas para el control de inventarios, administración y crecimiento empresarial en la región sureste de México.
+          </p>
+        </div>
+
+        <div>
+          <h3 class="text-xs font-semibold uppercase tracking-wider text-foreground mb-4">Producto</h3>
+          <ul class="flex flex-col gap-2.5 text-xs text-muted-foreground">
+            <li><a href="#features" class="transition-colors hover:text-foreground">Características</a></li>
+            <li><a href="#security" class="transition-colors hover:text-foreground">Seguridad SSL/TLS</a></li>
+            <li><a href="/signin" class="transition-colors hover:text-foreground">Acceso de Clientes</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="text-xs font-semibold uppercase tracking-wider text-foreground mb-4">Legal</h3>
+          <ul class="flex flex-col gap-2.5 text-xs text-muted-foreground">
+            <li><a href="#" class="transition-colors hover:text-foreground">Términos de servicio</a></li>
+            <li><a href="#" class="transition-colors hover:text-foreground">Política de privacidad</a></li>
+            <li><a href="#" class="transition-colors hover:text-foreground">Soporte Técnico</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="text-xs font-semibold uppercase tracking-wider text-foreground mb-4">Ubicación y Contacto</h3>
+          <p class="text-xs text-muted-foreground leading-relaxed">
+            Sureste de México<br/>
+            Soporte: contacto@serdisur.com<br/>
+            Teléfono: +52 (999) 123-4567
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-12 border-t border-border/20 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p class="text-3xs text-muted-foreground">
+          &copy; {currentYear} SERDISUR. Todos los derechos reservados.
+        </p>
+        <div class="flex items-center gap-2">
+          <span class="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-3xs font-medium text-emerald-500 border border-emerald-500/20">
+            <span class="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            Conexión SSL/TLS Activa
+          </span>
+        </div>
+      </div>
+    </div>
+  </footer>
+)}
