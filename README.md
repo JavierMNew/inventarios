@@ -40,7 +40,7 @@ El proyecto está desarrollado utilizando herramientas modernas y optimizadas de
 
 ## 📁 Estructura del Proyecto
 
-El código está estructurado bajo principios de arquitectura limpia y organización basada en dominio y funcionalidad (*Screaming Architecture*):
+El código está estructurado bajo principios de arquitectura limpia y organización en base al dominio y funcionalidad (*Screaming Architecture*):
 
 ```text
 inventarios/
