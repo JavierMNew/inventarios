@@ -1,0 +1,16 @@
+name: inventarios
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: inventarios-web
+    restart: unless-stopped
+    ports:
+      - "4321:4321"
+    environment:
+      - PORT=4321
+      - HOST=0.0.0.0
+    env_file:
+      - .env

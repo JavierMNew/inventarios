@@ -250,7 +250,31 @@ Para compilar y empaquetar el bundle optimizado para su despliegue en la nube (e
 pnpm build
 ```
 
+### 5. Despliegue con Docker y Docker Compose (Contenedores)
+El proyecto cuenta con configuración lista para desplegarse mediante contenedores Docker.
+
+#### Opción A: Mediante Docker Compose (Recomendado)
+Asegúrate de tener un archivo `.env` configurado con tus credenciales de Supabase y ejecuta:
+```bash
+docker compose up -d --build
+```
+La aplicación web estará disponible en [http://localhost:4321](http://localhost:4321). Para detener el contenedor:
+```bash
+docker compose down
+```
+
+#### Opción B: Mediante Docker CLI
+1. Construir la imagen Docker:
+```bash
+docker build -t inventarios-web .
+```
+2. Ejecutar el contenedor pasando las variables de entorno:
+```bash
+docker run -d -p 4321:4321 --env-file .env --name inventarios-app inventarios-web
+```
+
 ---
+
 
 ## 🧪 Esquema de Pruebas y Validación
 
