@@ -8,7 +8,7 @@ import node from '@astrojs/node';
 
 import react from '@astrojs/react';
 
-const isVercel = process.env.BUILD_TARGET === 'vercel';
+const isVercel = Boolean(process.env.VERCEL || process.env.BUILD_TARGET === 'vercel');
 
 // https://astro.build/config
 export default defineConfig({
